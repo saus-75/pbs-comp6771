@@ -27,8 +27,8 @@ int main() {
     // print certain values from the buckets
     std::cout << "Demonstrating that all the numbers that start with 1 come first" << std::endl;
 
-    std::cout << pbs.numbersToSort[0] << " " 
-        << pbs.numbersToSort[printIndex - 10000] << " " 
-        << pbs.numbersToSort[printIndex] << " " 
-        << pbs.numbersToSort[pbs.numbersToSort.size() - 1] << std::endl;
+    std::cout << "Start: " << pbs.numbersToSort[0] << "\n" 
+        << "Middle-ish: " << pbs.numbersToSort[printIndex - 10000] << "\n" 
+        << "Somewhere: " << pbs.numbersToSort[printIndex] << "\n" 
+        << "Last: " << pbs.numbersToSort[pbs.numbersToSort.size() - 1] << std::endl;
 }
