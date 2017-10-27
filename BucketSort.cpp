@@ -38,56 +38,11 @@ bool aLessB(const unsigned int& x, const unsigned int& y, unsigned int pow) {
     }
 }
 
-void t_sort(std::vector<unsigned int> &buckets){
-    std::sort(buckets.begin(), buckets.end(), [] (const unsigned int& x, const unsigned int& y)
+// TODO: replace this with a parallel version.
+void BucketSort::sort(unsigned int numCores) {
+    std::sort(numbersToSort.begin(), numbersToSort.end(), [] (const unsigned int& x, const unsigned int& y)
         {
             return aLessB(x,y,0);
         }
     );
-}
-
-// TODO: replace this with a parallel version.
-void BucketSort::sort(unsigned int numCores) {
-    // std::sort(numbersToSort.begin(), numbersToSort.end(), [] (const unsigned int& x, const unsigned int& y)
-    //     {
-    //         return aLessB(x,y,0);
-    //     }
-    // );
-    
-    std::vector<unsigned int> buckets[numCores];
-
-    unsigned int max_amount = numbersToSort.size()/numCores;
-
-    int curr_bucket = 0;
-
-    for (auto i: numbersToSort){
-        if (buckets[curr_bucket].size() < max_amount){
-            buckets[curr_bucket].push_back(i);
-        } else {
-            buckets[curr_bucket].push_back(i);
-            curr_bucket++;
-        }
-    }
-
-    std::vector<std::shared_ptr<std::thread>> threads;
-
-    for (auto i = 0U; i < numCores; ++i){
-        threads.push_back(std::make_shared<std::thread>(t_sort, std::ref(buckets[i])));
-    }
-
-    for (auto t : threads){
-        t -> join();
-    }
-
-    std::vector<unsigned int> sv;
-    for (auto i = 0U; i < numCores; ++i){
-        sv.insert(sv.end(), buckets[i].begin(), buckets[i].end());
-    }
-
-    std::sort(sv.begin(),sv.end(), [] (const unsigned int& x, const unsigned int& y){
-            return aLessB(x,y,0);
-    } );
-
-    numbersToSort.clear();
-    numbersToSort.insert(numbersToSort.end(), sv.begin(), sv.end());
 }
