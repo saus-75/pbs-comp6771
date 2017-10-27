@@ -57,7 +57,6 @@ void BucketSort::sort(unsigned int numCores) {
     std::vector<unsigned int> buckets[numCores];
 
     unsigned int max_amount = numbersToSort.size()/numCores;
-    std::cout << "Max values in each bucket: " << max_amount << "\n";
 
     int curr_bucket = 0;
 
@@ -66,11 +65,9 @@ void BucketSort::sort(unsigned int numCores) {
             buckets[curr_bucket].push_back(i);
         } else {
             buckets[curr_bucket].push_back(i);
-            std::cout << buckets[curr_bucket].size() << "\n";
             curr_bucket++;
         }
     }
-    std::cout << buckets[curr_bucket].size() << "\n";
 
     std::vector<std::shared_ptr<std::thread>> threads;
 
