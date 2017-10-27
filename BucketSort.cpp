@@ -50,8 +50,12 @@ void t_sort(std::vector<unsigned int> &buckets){
 
 // TODO: replace this with a parallel version.
 void BucketSort::sort(unsigned int numCores) {
-
-    std::vector<unsigned int> buckets[numCores];
+    // std::sort(numbersToSort.begin(), numbersToSort.end(), [] (const unsigned int& x, const unsigned int& y)
+    //     {
+    //         return aLessB(x,y,0);
+    //     }
+    // );
+    // std::vector<unsigned int> buckets[numCores];
 
     int max_amount = numbersToSort.size()/numCores;
     std::cout << "Max values in each bucket: " << max_amount << "\n";
