@@ -1,6 +1,8 @@
 #include "BucketSort.h"
 #include <algorithm>
 #include <cmath>
+#include <string>
+
 #include <thread>
 #include <memory>
 
@@ -39,40 +41,27 @@ bool aLessB(const unsigned int& x, const unsigned int& y, unsigned int pow) {
 }
 
 void t_sort(std::vector<unsigned int> &buckets){
-    std::cout << "Sorting...\n" << *(buckets.begin()) << std::endl ;
-    std::sort(buckets.begin(), buckets.end(), [] (const unsigned int& x, const unsigned int& y)
+    std::stable_sort(buckets.begin(), buckets.end(), [] (const unsigned int& x, const unsigned int& y)
         {
-            return aLessB(x,y,0);
+            return std::to_string(x) < std::to_string(y);
+            // return aLessB(x,y,0);
         }
     );
-    std::cout << "First index: " << *(buckets.begin()) << std::endl ;
 }
 
 // TODO: replace this with a parallel version.
 void BucketSort::sort(unsigned int numCores) {
-
-    std::vector<unsigned int> buckets[numCores];
-
-    int max_amount = numbersToSort.size()/numCores;
-    std::cout << "Max values in each bucket: " << max_amount << "\n";
-
-    int curr_bucket = 0;
+    std::vector<unsigned int> buckets[9];
 
     for (auto i: numbersToSort){
-        if (buckets[curr_bucket].size() < max_amount){
-            buckets[curr_bucket].push_back(i);
-        } else {
-            buckets[curr_bucket].push_back(i);
-            std::cout << buckets[curr_bucket].size() << "\n";
-            std::cout << "Bucket increased!\n";
-            curr_bucket++;
-        }
+        std::string lex = std::to_string(i);
+        int bn = (int)lex[0] - '0';
+        buckets[bn - 1].push_back(i);
     }
-    std::cout << buckets[curr_bucket].size() << "\n";
 
     std::vector<std::shared_ptr<std::thread>> threads;
 
-    for (int i = 0; i < numCores; ++i){
+    for (int i = 0; i < 9; ++i){
         threads.push_back(std::make_shared<std::thread>(t_sort, std::ref(buckets[i])));
     }
 
@@ -81,23 +70,16 @@ void BucketSort::sort(unsigned int numCores) {
     }
 
     std::vector<unsigned int> sv;
-    for (int i = 0; i < numCores; ++i){
+    for (int i = 0; i < 9; ++i){
         sv.insert(sv.end(), buckets[i].begin(), buckets[i].end());
-        // buckets[0].insert(buckets[0].end(), buckets[i].begin(), buckets[i].end());
     }
-
-    std::sort(sv.begin(),sv.end(), [] (const unsigned int& x, const unsigned int& y){
-            return aLessB(x,y,0);
-    } );
 
     numbersToSort.clear();
     numbersToSort.insert(numbersToSort.end(), sv.begin(), sv.end());
-    std::cout << "Size of unsorted vector: " << numbersToSort.size() << "\n";
-    std::cout << "Size of sorted vector: " << sv.size() << "\n";
 
-    std::cout << "Start: " << sv[0] << "\n" 
-        << "Middle-ish: " << sv[259000 - 10000] << "\n" 
-        << "Somewhere: " << sv[259000] << "\n" 
-        << "Last: " << sv[sv.size() - 1] << std::endl;
-
+    // std::sort(numbersToSort.begin(), numbersToSort.end(), [] (const unsigned int& x, const unsigned int& y)
+    //     {
+    //         return aLessB(x,y,0);
+    //     }
+    // );
 }
